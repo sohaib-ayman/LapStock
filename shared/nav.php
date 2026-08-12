@@ -1,33 +1,25 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">LapStock</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <button class="nav-link active" aria-current="page" href="#"><i class="bi bi-layout-sidebar"></i></button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link active" aria-current="page" href="#"><i class="bi bi-bell"></i></button>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </li>
-            </ul>
+<nav class="navbar navbar-expand bg-white dashboard-navbar">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center gap-4">
+            <button class="sidebar-toggle" type="button">
+                <i class="bi bi-list"></i>
+            </button>
+            <span class="page-title">Dashboard</span>
+        </div>
+        <div class="d-flex align-items-center gap-4 ms-auto">
+            <div class="dropdown user-dropdown">
+                <button class="user-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="user-name">Admin User</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end user-menu">
+                    <li class="user-info">
+                        <div class="user-info-name">Admin User</div>
+                        <div class="user-info-email">admin@inventory.sa</div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item user-menu-item logout-item" href="#"><i class="bi bi-box-arrow-right"></i> <span>Logout</span></a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </nav>

@@ -33,6 +33,7 @@ if (isset($_GET["delete"])) {
 </head>
 
 <body>
+    <?php include('../shared/nav.php') ?>
     <div class="container mt-4">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -142,7 +143,7 @@ if (isset($_GET["delete"])) {
         }
 
     </script>
-
+    <script src="../js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
