@@ -76,7 +76,7 @@ if (isset($_POST["btn"])) {
     <div class="container mt-4">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a class="text-decoration-none" href="../index.php">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-decoration-none" href="../dashboard/home.php">Home</a></li>
                 <li class="breadcrumb-item active">Inventory</li>
                 <li class="breadcrumb-item"><a class="text-decoration-none" href="./index.php">Brands</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><span>Add New</span></li>

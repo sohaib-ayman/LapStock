@@ -1,6 +1,6 @@
 <?php
 
-include "db.php";
+include "../shared/db.php";
 
 $search = "";
 
@@ -12,19 +12,19 @@ if ($search != "") {
 
     $searchValue = "%" . $search . "%";
 
-    $stmt = mysqli_prepare($con, "
+    $stmt = mysqli_prepare($conn, "
         SELECT 
             products.*,
             categories.name AS category_name,
             brands.name AS brand_name,
-            partners.name AS partner_name
+            suppliers.name AS supplier_name
         FROM products
         LEFT JOIN categories 
             ON products.category_id = categories.id
         LEFT JOIN brands 
             ON products.brand_id = brands.id
-        LEFT JOIN partners 
-            ON products.partner_id = partners.id
+        LEFT JOIN suppliers 
+            ON products.supplier_id = suppliers.id
         WHERE products.name LIKE ?
         OR products.description LIKE ?
         ORDER BY products.id DESC
@@ -42,18 +42,18 @@ if ($search != "") {
             products.*,
             categories.name AS category_name,
             brands.name AS brand_name,
-            partners.name AS partner_name
+            suppliers.name AS partner_name
         FROM products
         LEFT JOIN categories 
             ON products.category_id = categories.id
         LEFT JOIN brands 
             ON products.brand_id = brands.id
-        LEFT JOIN partners 
-            ON products.partner_id = partners.id
+        LEFT JOIN suppliers 
+            ON products.supplier_id = suppliers.id
         ORDER BY products.id DESC
     ";
 
-    $result = mysqli_query($con, $sql);
+    $result = mysqli_query($conn, $sql);
 }
 
 ?>
@@ -132,7 +132,7 @@ if ($search != "") {
 
                 <th>Brand</th>
 
-                <th>Partner</th>
+                <th>Supplier</th>
 
                 <th>Actions</th>
 
@@ -196,7 +196,7 @@ if ($search != "") {
 
 
                         <td>
-                            <?php echo htmlspecialchars($row['partner_name'] ?? ''); ?>
+                            <?php echo htmlspecialchars($row['supplier_name'] ?? ''); ?>
                         </td>
 
 
