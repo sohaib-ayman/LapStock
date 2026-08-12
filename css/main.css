@@ -287,6 +287,138 @@ body {
     border: none !important;
 }
 
+.dashboard-navbar {
+    height: 70px;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1000;
+}
+
+.dashboard-navbar .container-fluid {
+    height: 100%;
+}
+
+.dashboard-navbar .sidebar-toggle {
+    border: 0;
+    background: transparent;
+
+    color: #607797;
+
+    font-size: 21px;
+
+    width: 32px;
+    height: 32px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.dashboard-navbar .sidebar-toggle:hover {
+    color: #314158;
+}
+
+.dashboard-navbar .page-title {
+    color: #0f172b;
+
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.dashboard-navbar .notification-btn:focus,
+.dashboard-navbar .notification-btn.show {
+    border: 1px solid #0f172b;
+    background-color: #ffffff;
+    color: #607797;
+
+    box-shadow: none;
+}
+
+.dashboard-navbar .user-btn {
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #0f172b !important;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.dashboard-navbar .user-btn::after {
+    color: #8da0ba;
+    margin-left: 2px;
+}
+
+.dashboard-navbar .user-btn:focus {
+    box-shadow: none !important;
+}
+
+.dashboard-navbar .user-menu {
+    width: 225px;
+    padding: 8px 0;
+    margin-top: 8px !important;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    background-color: #ffffff;
+    box-shadow:
+        0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+.dashboard-navbar .user-info {
+    padding: 10px 20px 8px;
+}
+
+.dashboard-navbar .user-info-name {
+    color: #1e293b;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.dashboard-navbar .user-info-email {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.dashboard-navbar .dropdown-divider {
+    margin: 5px 0;
+    border-color: #edf1f5;
+}
+
+.dashboard-navbar .user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    color: #475569;
+    font-size: 16px;
+}
+
+.dashboard-navbar .user-menu-item i {
+    font-size: 18px;
+}
+
+.dashboard-navbar .user-menu-item:hover {
+    background-color: #f8fafc;
+}
+
+.dashboard-navbar .logout-item {
+    color: #ef233c;
+}
+
+.dashboard-navbar .logout-item:hover {
+    color: #dc2626;
+    background-color: #fff1f2;
+}
+
 @media (max-width: 321px) {
     .search-container #tableSearchInput {
         width: 90%;

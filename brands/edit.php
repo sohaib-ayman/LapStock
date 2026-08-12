@@ -102,6 +102,7 @@ if (isset($_POST["btn"])) {
 </head>
 
 <body>
+    <?php include('../shared/nav.php') ?>
     <div class="container mt-4">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
