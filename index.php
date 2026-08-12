@@ -1,417 +1,327 @@
 <?php
+require_once './shared/db.php';
 
-include "shared/db.php";
+$totalProducts = 0;
+$res = mysqli_query($conn, "SELECT COUNT(*) as total FROM products");
+if ($res && $row = mysqli_fetch_assoc($res)) { $totalProducts = $row['total']; }
 
+$availableProducts = 0;
+$res = mysqli_query($conn, "SELECT COUNT(*) as total FROM products WHERE quantity > 3");
+if ($res && $row = mysqli_fetch_assoc($res)) { $availableProducts = $row['total']; }
 
-/* Counts */
+$lowStockProducts = 0;
+$res = mysqli_query($conn, "SELECT COUNT(*) as total FROM products WHERE quantity > 0 AND quantity <= 3");
+if ($res && $row = mysqli_fetch_assoc($res)) { $lowStockProducts = $row['total']; }
 
-$productsCount = mysqli_fetch_assoc(
-    mysqli_query($conn, "SELECT COUNT(*) AS total FROM products")
-)['total'];
+$outOfStockProducts = 0;
+$res = mysqli_query($conn, "SELECT COUNT(*) as total FROM products WHERE quantity = 0");
+if ($res && $row = mysqli_fetch_assoc($res)) { $outOfStockProducts = $row['total']; }
 
-$categoriesCount = mysqli_fetch_assoc(
-    mysqli_query($conn, "SELECT COUNT(*) AS total FROM categories")
-)['total'];
+$totalBrands = 0;
+$res = mysqli_query($conn, "SELECT COUNT(*) as total FROM brands");
+if ($res && $row = mysqli_fetch_assoc($res)) { $totalBrands = $row['total']; }
 
-$brandsCount = mysqli_fetch_assoc(
-    mysqli_query($conn, "SELECT COUNT(*) AS total FROM brands")
-)['total'];
-
-$suppliersCount = mysqli_fetch_assoc(
-    mysqli_query($conn, "SELECT COUNT(*) AS total FROM suppliers")
-)['total'];
-
-
-/* Low stock (3 or fewer units) */
-
-$lowStockCount = mysqli_fetch_assoc(
-    mysqli_query($conn, "SELECT COUNT(*) AS total FROM products WHERE quantity <= 3")
-)['total'];
-
+$totalSuppliers = 0;
+$res = mysqli_query($conn, "SELECT COUNT(*) as total FROM suppliers");
+if ($res && $row = mysqli_fetch_assoc($res)) { $totalSuppliers = $row['total']; }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Home — Laptop Inventory</title>
-
-    <link rel="stylesheet" href="shared/style.css">
-
+    <title>Laptop Inventory Dashboard</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
-}
-
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 40px auto;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-h1 {
-    font-size: 30px;
-}
-
-.btn {
-    display: inline-block;
-    padding: 10px 18px;
-    border-radius: 6px;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-}
-
-.btn-primary {
-    background: #007bff;
-    color: white;
-}
-
-.btn-success {
-    background: #198754;
-    color: white;
-}
-
-.btn-warning {
-    background: #ffc107;
-    color: #000;
-}
-
-.btn-danger {
-    background: #dc3545;
-    color: white;
-}
-
-.btn-secondary {
-    background: #6c757d;
-    color: white;
-}
-
-.search-box {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.search-box input {
-    width: 70%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-.search-box button {
-    padding: 12px 20px;
-    border: none;
-    background: #007bff;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.table-container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-table th,
-table td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-}
-
-table th {
-    background: #343a40;
-    color: white;
-}
-
-.product-image {
-    width: 70px;
-    height: 70px;
-    object-fit: cover;
-    border-radius: 6px;
-}
-
-.actions {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    flex-wrap: wrap;
-}
-
-.form-container {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    max-width: 700px;
-    margin: auto;
-}
-
-.form-group {
-    margin-bottom: 18px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 7px;
-    font-weight: bold;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    padding: 11px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-.form-group textarea {
-    height: 120px;
-    resize: vertical;
-}
-
-.error {
-    background: #f8d7da;
-    color: #842029;
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-}
-
-.success {
-    background: #d1e7dd;
-    color: #0f5132;
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-}
-
-.details {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-}
-
-.details-row {
-    padding: 12px 0;
-    border-bottom: 1px solid #ddd;
-}
-
-.details-row strong {
-    display: inline-block;
-    width: 150px;
-}
-
-.big-image {
-    width: 250px;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.no-image {
-    width: 70px;
-    height: 70px;
-    background: #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    font-size: 12px;
-}
-
-.navbar {
-    background: white;
-    padding: 15px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-}
-
-.navbar-brand {
-    font-size: 20px;
-    font-weight: bold;
-    color: #007bff;
-}
-
-.navbar-links a {
-    margin-left: 25px;
-    text-decoration: none;
-    color: #444;
-    font-size: 15px;
-}
-
-.navbar-links a:hover {
-    color: #007bff;
-}
-
-.breadcrumb {
-    color: #777;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-.dashboard-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-    margin: 25px 0;
-}
-
-.card {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-}
-
-.card-label {
-    color: #666;
-    margin-bottom: 8px;
-}
-
-.card-number {
-    font-size: 34px;
-    font-weight: bold;
-}
-
-.alert-warning {
-    background: #fff3cd;
-    color: #664d03;
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-}
-
-.quick-links {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-}
-
-.quick-links h2 {
-    font-size: 18px;
-    margin-bottom: 18px;
-}
-
-.quick-links-buttons {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
+        body {
+            background-color: #f8fafc;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .stat-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
+            padding: 18px;
+        }
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+        .badge-in-stock { background-color: #e6f4ea; color: #137333; }
+        .badge-low-stock { background-color: #fef7e0; color: #b06000; }
+        .badge-out-stock { background-color: #fce8e6; color: #c5221f; }
+        .table-custom th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #64748b;
+            background-color: #f8fafc;
+        }
+        .prod-img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
     </style>
 </head>
-
 <body>
 
-<?php include "shared/navbar.php"; ?>
+    <?php include './shared/nav.php'; ?>
 
+    <div class="container-fluid px-4 py-4">
 
-<div class="container">
+        <div class="mb-4">
+            <small class="text-muted">Home &gt; <span class="text-dark">Dashboard</span></small>
+            <h3 class="fw-bold text-dark mt-1">Laptop Inventory Dashboard</h3>
+        </div>
 
-    <div class="breadcrumb">
-        Home
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="stat-card shadow-sm">
+                    <div class="icon-box bg-primary-subtle text-primary"><i class="bi bi-laptop"></i></div>
+                    <h3 class="fw-bold mb-0"><?php echo $totalProducts; ?></h3>
+                    <div class="text-secondary small fw-medium">Total Products</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="stat-card shadow-sm">
+                    <div class="icon-box bg-success-subtle text-success"><i class="bi bi-check-circle"></i></div>
+                    <h3 class="fw-bold mb-0"><?php echo $availableProducts; ?></h3>
+                    <div class="text-secondary small fw-medium">Available</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="stat-card shadow-sm">
+                    <div class="icon-box bg-warning-subtle text-warning"><i class="bi bi-exclamation-triangle"></i></div>
+                    <h3 class="fw-bold mb-0"><?php echo $lowStockProducts; ?></h3>
+                    <div class="text-secondary small fw-medium">Low Stock</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="stat-card shadow-sm">
+                    <div class="icon-box bg-danger-subtle text-danger"><i class="bi bi-x-circle"></i></div>
+                    <h3 class="fw-bold mb-0"><?php echo $outOfStockProducts; ?></h3>
+                    <div class="text-secondary small fw-medium">Out of Stock</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="stat-card shadow-sm">
+                    <div class="icon-box bg-info-subtle text-info"><i class="bi bi-building"></i></div>
+                    <h3 class="fw-bold mb-0"><?php echo $totalBrands; ?></h3>
+                    <div class="text-secondary small fw-medium">Total Brands</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+                <div class="stat-card shadow-sm">
+                    <div class="icon-box bg-secondary-subtle text-secondary"><i class="bi bi-people"></i></div>
+                    <h3 class="fw-bold mb-0"><?php echo $totalSuppliers; ?></h3>
+                    <div class="text-secondary small fw-medium">Total Suppliers</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            
+            <div class="col-lg-8">
+                <div class="bg-white rounded-3 p-3 border shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+                        <h5 class="fw-bold m-0 text-dark">Recent Products</h5>
+                        <a href="./products/product.php" class="text-primary text-decoration-none small fw-semibold">View All &rarr;</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Brand</th>
+                                    <th>Price</th>
+                                    <th>QTY</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $query = "
+                                    SELECT products.*, brands.name AS brand_name 
+                                    FROM products 
+                                    LEFT JOIN brands ON products.brand_id = brands.id 
+                                    ORDER BY products.id DESC LIMIT 6
+                                ";
+                                $result = mysqli_query($conn, $query);
+
+                                if ($result && mysqli_num_rows($result) > 0) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        $qty = (int)$row['quantity'];
+                                        if ($qty == 0) {
+                                            $statusText = 'Out of Stock';
+                                            $statusClass = 'badge-out-stock';
+                                        } elseif ($qty <= 3) {
+                                            $statusText = 'Low Stock';
+                                            $statusClass = 'badge-low-stock';
+                                        } else {
+                                            $statusText = 'In Stock';
+                                            $statusClass = 'badge-in-stock';
+                                        }
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <?php if (!empty($row['image']) && file_exists("uploads/" . $row['image'])) { ?>
+                                                        <img src="uploads/<?php echo htmlspecialchars($row['image']); ?>" class="prod-img">
+                                                    <?php } else { ?>
+                                                        <div class="p-2 bg-light rounded text-secondary">
+                                                            <i class="bi bi-laptop fs-5"></i>
+                                                        </div>
+                                                    <?php } ?>
+                                                    <div>
+                                                        <div class="fw-bold text-dark mb-0" style="font-size: 14px;"><?php echo htmlspecialchars($row['name']); ?></div>
+                                                        <small class="text-muted">ID: #<?php echo $row['id']; ?></small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-secondary small"><?php echo htmlspecialchars($row['brand_name'] ?? 'N/A'); ?></td>
+                                            <td class="text-dark small fw-semibold">$<?php echo number_format($row['price'], 2); ?></td>
+                                            <td class="fw-bold text-dark"><?php echo $qty; ?></td>
+                                            <td>
+                                                <span class="badge <?php echo $statusClass; ?> px-2 py-1">
+                                                    ● <?php echo $statusText; ?>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                } else {
+                                    echo '<tr><td colspan="5" class="text-center py-4 text-muted">No products found</td></tr>';
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="d-flex flex-column gap-3">
+                    
+                    <div class="bg-white rounded-3 p-3 border shadow-sm">
+                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>Low Stock Items</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <?php
+                            $lowSql = "SELECT * FROM products WHERE quantity > 0 AND quantity <= 3 LIMIT 3";
+                            $lowRes = mysqli_query($conn, $lowSql);
+                            if ($lowRes && mysqli_num_rows($lowRes) > 0) {
+                                while ($lRow = mysqli_fetch_assoc($lowRes)) {
+                                    ?>
+                                    <div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="p-1 bg-light rounded"><i class="bi bi-laptop"></i></div>
+                                            <div>
+                                                <div class="fw-semibold small"><?php echo htmlspecialchars($lRow['name']); ?></div>
+                                                <small class="text-danger">Stock: <?php echo $lRow['quantity']; ?></small>
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-low-stock">Low Stock</span>
+                                    </div>
+                                    <?php
+                                }
+                            } else {
+                                echo '<small class="text-muted">No low stock items</small>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3 p-3 border shadow-sm">
+                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-x-circle-fill text-danger me-2"></i>Out of Stock Items</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <?php
+                            $outSql = "SELECT * FROM products WHERE quantity = 0 LIMIT 3";
+                            $outRes = mysqli_query($conn, $outSql);
+                            if ($outRes && mysqli_num_rows($outRes) > 0) {
+                                while ($oRow = mysqli_fetch_assoc($outRes)) {
+                                    ?>
+                                    <div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="p-1 bg-light rounded"><i class="bi bi-laptop"></i></div>
+                                            <div>
+                                                <div class="fw-semibold small"><?php echo htmlspecialchars($oRow['name']); ?></div>
+                                                <small class="text-danger">0 units</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge badge-out-stock">Out of Stock</span>
+                                    </div>
+                                    <?php
+                                }
+                            } else {
+                                echo '<small class="text-muted">No out of stock items</small>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="bg-white p-3 rounded-3 border shadow-sm">
+                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Brand Distribution</h6>
+                    <div style="height: 250px;">
+                        <canvas id="brandChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="bg-white p-3 rounded-3 border shadow-sm">
+                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-pie-chart-fill text-purple me-2"></i>Category Distribution</h6>
+                    <div style="height: 250px;" class="d-flex justify-content-center">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <h1>Laptop Inventory Dashboard</h1>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+        new Chart(document.getElementById('brandChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Lenovo', 'Dell', 'HP', 'ASUS', 'Acer', 'MSI', 'Apple'],
+                datasets: [{
+                    data: [1, 2, 1, 1, 1, 1, 1],
+                    backgroundColor: '#0d6efd',
+                    borderRadius: 4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
 
-    <div class="dashboard-cards">
-
-        <div class="card">
-            <div class="card-label">Products</div>
-            <div class="card-number"><?php echo $productsCount; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="card-label">Categories</div>
-            <div class="card-number"><?php echo $categoriesCount; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="card-label">Brands</div>
-            <div class="card-number"><?php echo $brandsCount; ?></div>
-        </div>
-
-        <div class="card">
-            <div class="card-label">Suppliers</div>
-            <div class="card-number"><?php echo $suppliersCount; ?></div>
-        </div>
-
-    </div>
-
-
-    <?php if ($lowStockCount > 0) { ?>
-
-        <div class="alert-warning">
-            ⚠ <?php echo $lowStockCount; ?> product(s) are low on stock (3 or fewer units).
-        </div>
-
-    <?php } ?>
-
-
-    <div class="quick-links">
-
-        <h2>Quick Links</h2>
-
-        <div class="quick-links-buttons">
-
-            <a href="/products/product.php" class="btn btn-primary">
-                Manage Products
-            </a>
-
-            <a href="/categories/categories.php" class="btn btn-secondary">
-                Categories
-            </a>
-
-            <a href="/brands/brands.php" class="btn btn-secondary">
-                Brands
-            </a>
-
-            <a href="/suppliers/suppliers.php" class="btn btn-secondary">
-                Suppliers
-            </a>
-
-        </div>
-
-    </div>
-
-</div>
-
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Gaming', 'Business', 'Student', 'Ultrabook', 'Workstation'],
+                datasets: [{
+                    data: [3, 2, 1, 1, 1],
+                    backgroundColor: ['#0d6efd', '#198754', '#fd7e14', '#6f42c1', '#0dcaf0']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+        });
+    </script>
 </body>
-
 </html>
