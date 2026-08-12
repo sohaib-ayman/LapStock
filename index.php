@@ -1,5 +1,5 @@
 <?php
-require_once './shared/db.php';
+require_once 'shared/db.php';
 
 $totalProducts = 0;
 $res = mysqli_query($conn, "SELECT COUNT(*) as total FROM products");
@@ -24,6 +24,28 @@ if ($res && $row = mysqli_fetch_assoc($res)) { $totalBrands = $row['total']; }
 $totalSuppliers = 0;
 $res = mysqli_query($conn, "SELECT COUNT(*) as total FROM suppliers");
 if ($res && $row = mysqli_fetch_assoc($res)) { $totalSuppliers = $row['total']; }
+
+$brandLabels = [];
+$brandData = [];
+$brandQuery = "SELECT brands.name, COUNT(products.id) as total FROM brands LEFT JOIN products ON brands.id = products.brand_id GROUP BY brands.id, brands.name";
+$brandRes = mysqli_query($conn, $brandQuery);
+if ($brandRes) {
+    while ($bRow = mysqli_fetch_assoc($brandRes)) {
+        $brandLabels[] = $bRow['name'];
+        $brandData[] = (int)$bRow['total'];
+    }
+}
+
+$categoryLabels = [];
+$categoryData = [];
+$catQuery = "SELECT categories.name, COUNT(products.id) as total FROM categories LEFT JOIN products ON categories.id = products.category_id GROUP BY categories.id, categories.name";
+$catRes = mysqli_query($conn, $catQuery);
+if ($catRes) {
+    while ($cRow = mysqli_fetch_assoc($catRes)) {
+        $categoryLabels[] = $cRow['name'];
+        $categoryData[] = (int)$cRow['total'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -35,8 +57,9 @@ if ($res && $row = mysqli_fetch_assoc($res)) { $totalSuppliers = $row['total']; 
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="./css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="./css/main.css">
+
     <style>
         body {
             background-color: #f8fafc;
@@ -77,7 +100,7 @@ if ($res && $row = mysqli_fetch_assoc($res)) { $totalSuppliers = $row['total']; 
 </head>
 <body>
 
-    <?php include './shared/nav.php'; ?>
+    <?php include 'shared/nav.php'; ?>
 
     <div class="container-fluid px-4 py-4">
 
@@ -137,7 +160,7 @@ if ($res && $row = mysqli_fetch_assoc($res)) { $totalSuppliers = $row['total']; 
                 <div class="bg-white rounded-3 p-3 border shadow-sm h-100">
                     <div class="d-flex justify-content-between align-items-center mb-3 px-2">
                         <h5 class="fw-bold m-0 text-dark">Recent Products</h5>
-                        <a href="./products/product.php" class="text-primary text-decoration-none small fw-semibold">View All &rarr;</a>
+                        <a href="products_module/products.php" class="text-primary text-decoration-none small fw-semibold">View All &rarr;</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table align-middle table-hover table-custom">
@@ -301,23 +324,30 @@ if ($res && $row = mysqli_fetch_assoc($res)) { $totalSuppliers = $row['total']; 
         new Chart(document.getElementById('brandChart'), {
             type: 'bar',
             data: {
-                labels: ['Lenovo', 'Dell', 'HP', 'ASUS', 'Acer', 'MSI', 'Apple'],
+                labels: <?php echo json_encode($brandLabels); ?>,
                 datasets: [{
-                    data: [1, 2, 1, 1, 1, 1, 1],
+                    data: <?php echo json_encode($brandData); ?>,
                     backgroundColor: '#0d6efd',
                     borderRadius: 4
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { precision: 0 } }
+                }
+            }
         });
 
         new Chart(document.getElementById('categoryChart'), {
             type: 'doughnut',
             data: {
-                labels: ['Gaming', 'Business', 'Student', 'Ultrabook', 'Workstation'],
+                labels: <?php echo json_encode($categoryLabels); ?>,
                 datasets: [{
-                    data: [3, 2, 1, 1, 1],
-                    backgroundColor: ['#0d6efd', '#198754', '#fd7e14', '#6f42c1', '#0dcaf0']
+                    data: <?php echo json_encode($categoryData); ?>,
+                    backgroundColor: ['#0d6efd', '#198754', '#fd7e14', '#6f42c1', '#0dcaf0', '#ffc107', '#20c997']
                 }]
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
