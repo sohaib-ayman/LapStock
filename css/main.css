@@ -284,6 +284,7 @@ body {
 
 .container tbody td a {
     text-decoration: none;
+    background-color: transparent !important;
     border: none !important;
 }
 
