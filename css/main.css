@@ -1,0 +1,294 @@
+body {
+    background-color: #f1f5f9;
+}
+
+.card,
+.card-header {
+    background-color: white !important;
+    border-radius: 15px !important;
+}
+
+.card {
+    border: 0;
+}
+
+.card-header {
+    border-color: #f1f5f9;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.card-body label {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.card input::placeholder,
+.card textarea::placeholder {
+    color: #90a1b9;
+}
+
+.card input:focus,
+.card textarea:focus {
+    border-color: #408bfd !important;
+    box-shadow: 0 0 0 2px #408bfd !important;
+}
+
+.container .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.container nav {
+    font-size: 0.75rem;
+}
+
+.container nav span {
+    font-weight: 600;
+    color: #314158;
+}
+
+.container .card-body button,
+.container .headerContent a {
+    background-color: #155dfc;
+    color: white;
+}
+
+.container .card-body button:hover,
+.container .headerContent a:hover {
+    background-color: #1447e6;
+}
+
+.container .card-body button:active,
+.container .headerContent a:active {
+    background-color: #1447e6;
+    color: white;
+}
+
+.container .card-body a {
+    background-color: white;
+    border: 1px solid #e4e9f1;
+    color: black;
+}
+
+.container .card-body a:hover {
+    background-color: #f8fafc;
+}
+
+.container .card-body a:active {
+    background-color: #f8fafc;
+    color: black;
+}
+
+.container .card-body .inputsGroup div {
+    width: 48%;
+}
+
+.search-container {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.search-container .bi-search {
+    position: absolute;
+    left: 35px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #90a1b9;
+}
+
+.search-container #tableSearchInput {
+    padding: 8px 12px;
+    padding-left: 35px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    width: 300px;
+}
+
+.search-container #tableSearchInput::placeholder {
+    color: #90a1b9;
+}
+
+.search-container #tableSearchInput:focus {
+    outline-color: #408bfd;
+}
+
+.filterable-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+}
+
+.filterable-table thead th {
+    padding: 12px;
+    background-color: rgba(2, 132, 199, 0.03);
+    border-top: solid 1px #f1f5f9;
+    border-bottom: solid 1px #f1f5f9;
+    text-align: left;
+    font-weight: 600;
+    color: #62748E;
+    font-size: 0.75rem;
+}
+
+.filterable-table tbody td {
+    padding: 12px;
+    font-size: 0.875rem;
+    color: #62748E;
+}
+
+.container tbody tr:hover {
+    background-color: rgba(2, 132, 199, 0.03);
+}
+
+.filterable-table tbody .name {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.filterable-table tbody .qty {
+    color: #1a47e6;
+    font-weight: 600;
+    background-color: #dbeafe;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.filterable-table tbody .qtyZero {
+    color: #fb4952;
+    font-weight: 600;
+    background-color: #ffe2e2;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.filterable-table tbody td .image {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filterable-table tbody td .brandLogo {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    font-size: 1.125rem;
+    background-color: #155dfc;
+    border-radius: 7px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filterable-table tbody td .supplierLogo {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    font-size: 1.125rem;
+    background-color: #155dfc;
+    border-radius: 7px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filterable-table tbody td .bi-tag {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    font-size: 1.125rem;
+    background-color: #f3e8ff;
+    border-radius: 7px;
+    color: #9810fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filterable-table tbody .status {
+    color: #00c950;
+    font-weight: 600;
+    background-color: #dbfce7;
+    height: 25px;
+    width: 70px;
+    padding-right: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.filterable-table tbody .statusInactive {
+    color: #90a1b9;
+    font-weight: 600;
+    height: 25px;
+    width: 70px;
+    background-color: #f1f5f9;
+    padding-right: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.filterable-table tbody .bi-dot {
+    font-size: 1.25rem;
+}
+
+.container tbody td .bi-pencil,
+.container tbody td .bi-trash {
+    color: #62748E;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+}
+
+.container tbody td .bi-pencil:hover {
+    background-color: #fef3c6;
+    color: #e17100;
+
+}
+
+.container tbody td .bi-trash:hover {
+    background-color: #ffe2e2;
+    color: #eb232c;
+}
+
+.container tbody td a {
+    text-decoration: none;
+    border: none !important;
+}
+
+@media (max-width: 321px) {
+    .search-container #tableSearchInput {
+        width: 90%;
+    }
+}
